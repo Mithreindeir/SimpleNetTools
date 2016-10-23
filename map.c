@@ -6,6 +6,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <fcntl.h>
 
 struct portinfo
 {
@@ -53,7 +54,9 @@ void scan(char * ip)
 		if (connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(struct sockaddr)) < 0) {
 			closed_ports++;
 		} else {
+			
 			op[open_ports].port = i;	
+			fcntl(sockfd, F_SETFL, O_NONBLOCK);
 			bzero(op[open_ports].msg, 256);
 			read(sockfd, op[open_ports].msg, 255);
 			open_ports++;
